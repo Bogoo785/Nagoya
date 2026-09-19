@@ -2,42 +2,51 @@
 
 @theme {
   --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
-  --font-display: "Noto Serif TC", "Songti TC", serif;
 }
 
-:root {
-  color: #152437;
-  background: #f7f8f9;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-}
-
-html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; min-height: 100vh; }
+:root { font-family: var(--font-sans); color: #25332f; background: #f5f6f5; font-synthesis: none; text-rendering: optimizeLegibility; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
 button, a { -webkit-tap-highlight-color: transparent; }
-button:focus-visible, a:focus-visible { outline: 3px solid #d4ad55; outline-offset: 3px; }
-
-.eyebrow {
-  color: #a77d25;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+button { font: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 3px solid #538574; outline-offset: 4px; }
+.trip-app { max-width: 680px; min-height: 100dvh; margin: auto; padding: 36px 24px 24px; background: #fff; }
+.app-header h1 { margin: 0; font-size: 23px; font-weight: 700; letter-spacing: -.5px; }
+.app-header p { margin: 8px 0 26px; color: #7b837f; font-size: 13px; }
+.date-picker { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 14px; scrollbar-width: thin; scrollbar-color: #dce3df transparent; }
+.date-button { flex: 1 0 61px; display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 12px 6px; border: 0; border-radius: 14px; background: #f3f5f3; color: #737d77; }
+.date-button span { font-size: 11px; }
+.date-button strong { font-size: 16px; font-weight: 600; }
+.date-button.active { background: #2d594b; color: #fff; }
+.date-button:hover:not(.active) { background: #e8ede9; }
+.day-heading { padding: 24px 0 22px; }
+.day-heading p { margin: 0 0 8px; color: #7b837f; font-size: 12px; }
+.day-heading h2 { margin: 0; font-size: 21px; font-weight: 700; line-height: 1.5; }
+.itinerary { list-style: none; padding: 0; margin: 0; }
+.itinerary li { display: grid; grid-template-columns: 105px minmax(0, 1fr); gap: 16px; padding: 20px 0; border-top: 1px solid #edf0ed; }
+.event-time { padding-top: 2px; font-size: 12px; font-weight: 600; color: #507060; line-height: 1.8; font-variant-numeric: tabular-nums; }
+.event-content p { margin: 0; font-size: 14px; line-height: 1.9; }
+.event-content a, .booking-link { display: inline-flex; align-items: center; gap: 5px; color: #507060; font-size: 12px; text-decoration: none; }
+.event-content a { margin-top: 10px; }
+.booking-link { margin-top: 14px; padding: 10px 0; }
+.day-navigation { margin-top: 30px; padding-top: 20px; border-top: 1px solid #edf0ed; display: flex; align-items: center; justify-content: space-between; }
+.day-navigation button { display: flex; align-items: center; gap: 8px; background: transparent; border: 0; padding: 10px 0; font-size: 13px; color: #2d594b; }
+.day-navigation button:disabled { opacity: .25; cursor: default; }
+.day-navigation span { font-size: 12px; color: #8a938d; }
+@media (max-width: 480px) {
+  .trip-app { padding: 26px 20px 20px; }
+  .itinerary li { grid-template-columns: 86px minmax(0, 1fr); gap: 12px; }
 }
-
-.section-title {
-  margin-top: 0.75rem;
-  color: #152437;
-  font-family: var(--font-display);
-  font-size: clamp(2.25rem, 5vw, 3rem);
-  font-weight: 600;
-  line-height: 1.15;
-}
-
-.scrollbar-none { scrollbar-width: none; }
-.scrollbar-none::-webkit-scrollbar { display: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+.subway-map { margin: 0 0 20px; border: 1px solid #e5ebe6; border-radius: 12px; padding: 14px; }
+.subway-map summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+.subway-map summary span { margin-left: 10px; color: #7b837f; font-size: 11px; font-weight: 400; }
+.subway-map img { width: 100%; height: auto; margin-top: 16px; }
+.subway-map p, .transport-note, .transport-sources p { color: #7b837f; font-size: 12px; line-height: 1.8; }
+.subway-map a, .transport-sources a { color: #507060; font-size: 12px; }
+.transport-note { margin: -8px 0 20px; }
+.event-content .transit-directions { display: flex; gap: 7px; margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: #f3f6f3; color: #466453; font-size: 12px; line-height: 1.9; }
+.transit-directions svg { flex-shrink: 0; margin-top: 4px; }
+.transport-sources { margin-top: 20px; font-size: 12px; color: #7b837f; }
+.transport-sources summary { cursor: pointer; }
+.transport-sources a { display: inline-block; margin: 8px 14px 0 0; }

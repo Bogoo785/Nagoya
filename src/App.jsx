@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import { ArrowDown, ArrowLeft, ArrowRight, Bus, Check, ChevronDown, ChevronUp, CircleAlert, CloudSnow, Footprints, Hotel, Landmark, Luggage, Map, MapPin, Menu, Plane, ShoppingBag, Sparkles, TrainFront, Utensils, X } from 'lucide-react'
+import { useState } from 'react'
+import transport from './transport.json'
+import { ArrowLeft, ArrowRight, Bus, CloudSnow, Landmark, Luggage, MapPin, Plane, TrainFront } from 'lucide-react'
 
 const days = [
   { day:1, date:'1/6（三）', short:'抵達名古屋', title:'抵達名古屋', subtitle:'18:50 落地，第一晚只排入住＋晚餐', region:'高雄 → 中部國際機場 → 名古屋', icon:Plane, note:'不塞景點，冬天班機、行李、交通有延誤也不會影響後面。', events:[['14:50','搭乘 IT268，由高雄 KHH 飛往名古屋 NGO。','plane'],['18:50','抵達中部國際機場第二航廈（Terminal 2），入境、領行李。','plane'],['19:50 左右','步行到機場站，搭名鐵 μSKY 前往名鐵名古屋，最快約 28 分鐘。','train'],['20:30–21:00','抵達名古屋站、入住飯店；先熟悉 JR／名鐵／近鐵與地下街位置。','hotel'],['21:00 後','名古屋站附近吃晚餐／宵夜，第一晚不再安排景點。','food']], tip:'建議住名古屋站步行 5–10 分鐘內；若 KKday 在名古屋站西口集合，住太閤通口一帶尤其方便。' },
@@ -12,29 +13,78 @@ const days = [
   { day:8, date:'1/13（三）', short:'最後採買＋回程', title:'最後採買＋回機場', subtitle:'19:40 起飛，白天保留從容彈性', region:'名古屋 → 中部國際機場 → 高雄', icon:Luggage, note:'最後一天不排遠程景點，留足時間取行李、移動與完成免稅採買。', events:[['09:00–13:30','早餐、退房後寄放行李；名古屋站周邊最後採買／午餐。','shop'],['14:30–15:15','回飯店取行李，前往名鐵名古屋站；建議約 15:15 左右搭車去機場。','hotel'],['16:00 前後','抵達中部國際機場後前往第二航廈（Terminal 2），預留航廈間移動、報到與購物時間。','train'],['19:40','搭乘 IT269，由名古屋 NGO 返回高雄 KHH，預計 22:35 抵達。','plane']], tip:'回程班機 19:40 起飛，仍建議至少提前 3 小時抵達機場，冬季交通請多留緩衝。' },
 ]
 
-const iconMap={bus:Bus,food:Utensils,hotel:Hotel,landmark:Landmark,plane:Plane,shop:ShoppingBag,snow:CloudSnow,sparkle:Sparkles,train:TrainFront,walk:Footprints}
-const prepItems=['確認去程 IT268（1/6）與回程 IT269（1/13）的航班資料','預訂名古屋站附近住宿 7 晚','預訂 1/9（六）KKday 高山＋白川鄉一日團','確認磁浮鐵道館 1/11 國定假日的開館與預約資訊','確認 1/12（二）已購買 KKday 行程的集合資訊與電子憑證','準備發熱衣、防風羽絨外套、防水防滑鞋、手套與毛帽']
-const alternatives=[['產業歷史','D6 改豐田產業技術紀念館',Landmark],['歷史建築','D6 改成明治村整日',Landmark],['動畫／吉卜力','D6 改成吉卜力公園',Sparkles]]
-const cx=(...c)=>c.filter(Boolean).join(' ')
+export default function App() {
+  const [selected, setSelected] = useState(0)
+  const day = days[selected]
 
-function Header({open,setOpen}){const links=[['overview','行程總覽'],['days','每日行程'],['prepare','行前準備']];return <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#0e1a2b]/90 text-white backdrop-blur-md"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8"><a href="#top" className="flex items-center gap-3" aria-label="回到頁首"><span className="grid size-8 place-items-center border border-[#d9b760] text-[#f0cf79]"><CloudSnow size={17}/></span><span className="font-display text-lg font-semibold">名古屋冬旅</span><span className="hidden text-xs text-white/50 sm:inline">2027 · JAN</span></a><nav className="hidden gap-7 text-sm text-white/70 md:flex">{links.map(([id,label])=><a key={id} className="hover:text-white" href={`#${id}`}>{label}</a>)}</nav><button className="grid size-10 place-items-center md:hidden" onClick={()=>setOpen(!open)} aria-label={open?'關閉選單':'開啟選單'}>{open?<X/>:<Menu/>}</button></div>{open&&<nav className="border-t border-white/10 px-5 py-4 md:hidden">{links.map(([id,label])=><a key={id} onClick={()=>setOpen(false)} className="block py-3" href={`#${id}`}>{label}</a>)}</nav>}</header>}
+  function selectDay(index) {
+    setSelected(index)
+    document.getElementById(`date-${index}`)?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' })
+  }
 
-function Hero(){return <section id="top" className="relative isolate min-h-[680px] overflow-hidden bg-[#0e1a2b] text-white lg:min-h-[760px]"><img src="/nagoya-winter-cover.png" alt="雪夜裡的日式村落與城堡插畫" className="absolute inset-0 h-full w-full object-cover object-[center_70%] opacity-75"/><div className="absolute inset-0 bg-[#0e1a2b]/52"/><div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#0e1a2b] to-transparent"/><div className="relative mx-auto flex min-h-[680px] max-w-7xl items-end px-5 pb-16 pt-28 lg:min-h-[760px] lg:px-8 lg:pb-20"><div className="max-w-3xl"><div className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[.2em] text-[#f0cf79]"><span className="h-px w-10 bg-[#d4ad55]"/>Nagoya Winter Trip · 2027 Jan</div><h1 className="font-display text-5xl font-semibold leading-[1.12] sm:text-6xl lg:text-7xl">名古屋冬旅<br/><span className="text-[#f0cf79]">8天7夜</span></h1><p className="mt-5 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">2027/1/6–1/13，以名古屋站為基地，串連犬山、高山、白川鄉與長島冬季點燈。</p><div className="mt-8 flex gap-3"><a href="#days" className="inline-flex h-12 items-center gap-2 bg-[#e2bc5f] px-5 text-sm font-bold text-[#172334]">查看每日行程 <ArrowDown size={17}/></a><a href="#prepare" className="inline-flex h-12 items-center gap-2 border border-white/35 px-5 text-sm font-semibold">行前準備 <Luggage size={17}/></a></div><div className="mt-10 grid max-w-2xl grid-cols-3 border-t border-white/20 pt-5 text-sm"><div><strong className="block text-xl">7 晚</strong><span className="text-white/55">名古屋住宿</span></div><div><strong className="block text-xl">2 座</strong><span className="text-white/55">國寶城郭</span></div><div><strong className="block text-xl">1 團</strong><span className="text-white/55">高山白川鄉</span></div></div></div></div></section>}
+  return <main className="trip-app">
+    <header className="app-header">
+      <h1>名古屋行程</h1>
+      <p>2027 年 1 月 6 日 — 13 日</p>
+    </header>
 
-function Overview(){return <section id="overview" className="scroll-mt-16 bg-white py-20 lg:py-28"><div className="mx-auto max-w-7xl px-5 lg:px-8"><div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-end"><div><span className="eyebrow">Route overview</span><h2 className="section-title">一座城市<br/>延伸四方旅程</h2></div><p className="max-w-2xl leading-8 text-[#536171]">以名古屋站為基地，不需頻繁搬行李。市區日穿插犬山、高山白川鄉與長島，長途行程前後都保留彈性，讓冬季旅行不必一路趕場。</p></div><Flights/><div className="mt-6 grid gap-px border border-[#dce1e6] bg-[#dce1e6] sm:grid-cols-2"><Info icon={Hotel} title="住宿建議">名古屋站步行 5–10 分鐘內，連住 7 晚；太閤通口一帶方便參加一日團。</Info><Info icon={CloudSnow} title="冬季提醒">名古屋一月均溫約 4.8°C，高山約 -1.2°C；白川鄉需防水防滑。</Info></div></div></section>}
-function Flights(){
-  const flights=[
-    {label:'去程',number:'IT268',date:'2027/01/06（三）',from:'KHH 高雄國際機場',to:'NGO 名古屋中部國際機場',departure:'14:50',arrival:'18:50',fromTerminal:'',toTerminal:'第二航廈 · Terminal 2'},
-    {label:'回程',number:'IT269',date:'2027/01/13（三）',from:'NGO 名古屋中部國際機場',to:'KHH 高雄國際機場',departure:'19:40',arrival:'22:35',fromTerminal:'第二航廈 · Terminal 2',toTerminal:''},
-  ]
-  return <div className="mt-10" aria-label="去回程航班資訊"><div className="mb-4 flex flex-wrap items-baseline justify-between gap-2"><h3 className="text-lg font-bold">去回程航班</h3><span className="text-xs text-[#687583]">台灣虎航 · tigersmart｜時間皆為當地時間</span></div><div className="grid gap-4">{flights.map(f=><article key={f.number} className="overflow-hidden border border-[#dce1e6]"><div className="flex items-center justify-between gap-3 bg-[#132238] px-5 py-3 text-sm text-white"><span className="flex items-center gap-2 font-semibold"><Plane size={16} className="text-[#e7c977]"/>{f.label} · {f.number}</span><span className="text-white/75">{f.date}</span></div><div className="grid gap-5 p-5 sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:p-6"><div><p className="text-xs text-[#687583]">出發</p><p className="mt-1 text-3xl font-semibold text-[#132238]">{f.departure}</p><p className="mt-2 text-sm font-semibold">{f.from}</p>{f.fromTerminal&&<p className="mt-1 text-xs text-[#687583]">{f.fromTerminal}</p>}</div><ArrowRight size={20} className="hidden text-[#b0842f] sm:block"/><div><p className="text-xs text-[#687583]">抵達</p><p className="mt-1 text-3xl font-semibold text-[#132238]">{f.arrival}</p><p className="mt-2 text-sm font-semibold">{f.to}</p>{f.toTerminal&&<p className="mt-1 text-xs text-[#687583]">{f.toTerminal}</p>}</div></div></article>)}</div></div>
+    <details className="subway-map">
+      <summary>名古屋地鐵圖 <span>點開查看</span></summary>
+      <a href="/nagoya-subway-map.png" target="_blank" rel="noreferrer" aria-label="開啟完整尺寸地鐵圖">
+        <img src="/nagoya-subway-map.png" alt="名古屋市交通局官方地鐵圖，含東山線、名城線、名港線、鶴舞線、櫻通線及上飯田線" loading="lazy" width="1413" height="1353" />
+      </a>
+      <p>點圖可開啟大圖。名鐵與青波線不在這張地鐵圖內。</p>
+      <a className="map-source" href="https://map.kotsu.city.nagoya.jp/rp/subway/routemap.html" target="_blank" rel="noreferrer">來源：名古屋市交通局 · 官方路線圖</a>
+    </details>
+
+    <nav className="date-picker" aria-label="選擇行程日期">
+      {days.map((item, index) => <button
+        id={`date-${index}`}
+        key={item.day}
+        aria-pressed={selected === index}
+        aria-label={`${item.date} ${item.title}`}
+        className={selected === index ? 'date-button active' : 'date-button'}
+        onClick={() => selectDay(index)}
+      >
+        <span>週{item.date.match(/（(.)）/)[1]}</span>
+        <strong>{item.date.split('（')[0]}</strong>
+      </button>)}
+    </nav>
+
+    <section className="day-content" aria-labelledby="day-title" aria-live="polite">
+      <div className="day-heading">
+        <p>第 {day.day} 天 · {day.date}</p>
+        <h2 id="day-title">{day.title}</h2>
+      </div>
+      <p className="transport-note">交通以名古屋站附近住宿安排；以下是建議走法，行程時間不是列車發車時刻。</p>
+      <ol className="itinerary">
+        {day.events.map(([time, label, , mapUrl], index) => <li key={time + label}>
+          <span className="event-time">{time}</span>
+          <div className="event-content">
+            <p>{label}</p>
+            {transport[day.day]?.[index] && <p className="transit-directions"><TrainFront size={14} aria-hidden="true" /><span>{transport[day.day][index]}</span></p>}
+
+            {mapUrl && <a href={mapUrl} target="_blank" rel="noreferrer"><MapPin size={14} />查看地圖</a>}
+          </div>
+        </li>)}
+      </ol>
+      {day.bookingUrl && <a className="booking-link" href={day.bookingUrl} target="_blank" rel="noreferrer">KKday 行程資訊 <ArrowRight size={14} /></a>}
+      <details className="transport-sources">
+        <summary>交通資料來源</summary>
+        <p>依官方路線整理，查核於 2026/09/19；2027 年 1 月實際班次請於出發前確認。跟團集合資訊沿用你的行程與憑證。</p>
+        <a href="https://map.kotsu.city.nagoya.jp/rp/subway/routemap.html" target="_blank" rel="noreferrer">地鐵路線圖</a>
+        <a href="https://www.meitetsu.co.jp/train/centrair/guidance/index.html" target="_blank" rel="noreferrer">名鐵機場交通</a>
+        <a href="https://www.aonamiline.co.jp/train" target="_blank" rel="noreferrer">青波線</a>
+        <a href="https://www.centrair.jp/access/terminal2/" target="_blank" rel="noreferrer">機場 T2 交通</a>
+        <a href="https://inuyama.gr.jp/access" target="_blank" rel="noreferrer">犬山交通</a>
+        <a href="https://www.nagoyajo.city.nagoya.jp/" target="_blank" rel="noreferrer">名古屋城交通</a>
+      </details>
+    </section>
+
+    <footer className="day-navigation">
+      <button disabled={selected === 0} onClick={() => selectDay(selected - 1)}><ArrowLeft size={16} />前一天</button>
+      <span>{day.day} / {days.length}</span>
+      <button disabled={selected === days.length - 1} onClick={() => selectDay(selected + 1)}>後一天<ArrowRight size={16} /></button>
+    </footer>
+  </main>
 }
-function Info({icon:Icon,title,children}){return <div className="bg-[#f7f8f9] p-6"><Icon className="text-[#ae842f]" size={23}/><h3 className="mt-5 font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-[#687583]">{children}</p></div>}
-
-function DayDetail({selected,setSelected}){const d=days[selected-1];return <section id="days" className="scroll-mt-16 bg-[#f1f3f5] py-20 lg:py-28"><div className="mx-auto max-w-7xl px-5 lg:px-8"><div className="flex justify-between gap-5"><div><span className="eyebrow">Daily itinerary</span><h2 className="section-title">每日行程</h2></div><div className="hidden items-center gap-2 text-sm text-[#687583] sm:flex"><Map size={17}/>點選日期查看完整安排</div></div><div className="mt-10 flex gap-2 overflow-x-auto pb-3 scrollbar-none" role="tablist">{days.map(x=><button role="tab" aria-selected={selected===x.day} key={x.day} onClick={()=>setSelected(x.day)} className={cx('h-16 min-w-[108px] border px-4 text-left',selected===x.day?'border-[#152437] bg-[#152437] text-white':'border-[#d5dbe0] bg-white text-[#52606f]')}><span className="block text-[10px] font-bold opacity-60">DAY {x.day} · {x.date}</span><span className="mt-1 block text-sm font-semibold">{x.short}</span></button>)}</div><div className="mt-5 grid overflow-hidden border border-[#d9dee3] bg-white lg:grid-cols-[.92fr_1.08fr]"><div className="relative min-h-[390px] overflow-hidden bg-[#132238] p-7 text-white sm:p-10 lg:min-h-[620px] lg:p-12"><div className="absolute -bottom-16 -right-12 size-72 rotate-45 border border-white/10"/><div className="relative flex h-full flex-col"><div className="flex justify-between text-xs font-bold tracking-[.18em] text-[#e8c76e]"><span>DAY {d.day} · {d.date}</span><d.icon size={23}/></div><div className="mt-14 lg:mt-24"><h3 className="font-display text-4xl font-semibold sm:text-5xl">{d.title}</h3><p className="mt-3 text-lg text-[#e7c977]">{d.subtitle}</p></div><p className="mt-8 max-w-md text-sm leading-7 text-white/65">{d.note}</p>{d.bookingUrl&&<a href={d.bookingUrl} target="_blank" rel="noreferrer" className="mt-6 inline-flex w-fit items-center gap-2 border border-[#e7c977]/60 px-4 py-3 text-sm font-semibold text-[#f1d889] transition hover:bg-white/10">查看 KKday 商品 <ArrowRight size={16}/></a>}<div className="mt-auto flex items-center gap-2 border-t border-white/15 pt-6 text-sm text-white/70"><MapPin size={16}/>{d.region}</div></div></div><div className="p-6 sm:p-9 lg:p-12">{d.events.map(([time,label,type,mapUrl],i)=>{const Icon=iconMap[type];return <div key={time+label} className="grid grid-cols-[32px_78px_1fr] gap-3 sm:grid-cols-[36px_100px_1fr]"><div className="relative flex justify-center"><span className="z-10 grid size-8 place-items-center border border-[#d5b25a] bg-[#fffaf0] text-[#9d7625]"><Icon size={15}/></span>{i<d.events.length-1&&<span className="absolute bottom-0 top-8 w-px bg-[#dfe3e7]"/>}</div><div className="pt-1.5 text-xs font-bold text-[#9a7425] sm:text-sm">{time}</div><div className="min-h-20 pb-7 pt-1 text-sm leading-6 text-[#3f4e5e] sm:text-base">{label}{mapUrl&&<a href={mapUrl} target="_blank" rel="noreferrer" className="mt-2 flex w-fit items-center gap-1 text-xs font-semibold text-[#916b1f] hover:underline"><MapPin size={13}/>查看地圖</a>}</div></div>})}<div className="flex gap-3 border-l-2 border-[#c49a3d] bg-[#f7f1e4] p-4 text-sm leading-6 text-[#6d5526]"><CircleAlert className="mt-0.5 shrink-0" size={18}/>{d.tip}</div><div className="mt-7 flex justify-between border-t border-[#e4e7ea] pt-5"><button disabled={selected===1} onClick={()=>setSelected(selected-1)} className="inline-flex items-center gap-1 text-sm font-semibold disabled:opacity-25"><ArrowLeft size={15}/>前一天</button><button disabled={selected===8} onClick={()=>setSelected(selected+1)} className="inline-flex items-center gap-1 text-sm font-semibold text-[#916b1f] disabled:opacity-25">後一天<ArrowRight size={15}/></button></div></div></div></div></section>}
-
-function Preparation(){const [checked,setChecked]=useState(()=>{try{return JSON.parse(localStorage.getItem('nagoya-prep')||'[]')}catch{return[]}});const [open,setOpen]=useState(false);useEffect(()=>localStorage.setItem('nagoya-prep',JSON.stringify(checked)),[checked]);const toggle=i=>setChecked(c=>c.includes(i)?c.filter(x=>x!==i):[...c,i]);const progress=Math.round(checked.length/prepItems.length*100);return <section id="prepare" className="scroll-mt-16 bg-white py-20 lg:py-28"><div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-[.8fr_1.2fr] lg:px-8"><div><span className="eyebrow">Before you go</span><h2 className="section-title">行前準備</h2><p className="mt-5 max-w-md text-sm leading-7 text-[#657281]">航班、住宿、一日團與冬季裝備都整理成可勾選清單，狀態會保留在這台裝置上。</p><div className="mt-8 border border-[#dce1e6] p-5"><div className="flex items-end justify-between"><b>準備進度</b><strong className="text-2xl text-[#a77d25]">{progress}%</strong></div><div className="mt-4 h-2 bg-[#e7eaed]"><div className="h-full bg-[#c3993d]" style={{width:`${progress}%`}}/></div><p className="mt-3 text-xs text-[#7a8692]">已完成 {checked.length} / {prepItems.length} 項</p></div></div><div><div className="divide-y divide-[#e0e4e8] border-y border-[#e0e4e8]">{prepItems.map((item,i)=>{const done=checked.includes(i);return <button key={item} onClick={()=>toggle(i)} className="flex w-full items-center gap-4 py-5 text-left"><span className={cx('grid size-6 shrink-0 place-items-center border',done?'border-[#b88b2f] bg-[#b88b2f] text-white':'border-[#aeb7c0]')}>{done&&<Check size={15}/>}</span><span className={done?'text-[#929ba5] line-through':'text-[#263649]'}>{item}</span></button>})}</div><button onClick={()=>setOpen(!open)} className="mt-8 flex w-full items-center justify-between border border-[#d9dee3] bg-[#f5f7f8] p-5 text-left"><span><b className="block text-sm">1 月氣候與穿著</b><small className="text-[#778390]">名古屋約 4.8°C · 高山約 -1.2°C · 白川鄉可能積雪</small></span>{open?<ChevronUp/>:<ChevronDown/>}</button>{open&&<div className="grid gap-px border-x border-b border-[#d9dee3] bg-[#d9dee3] sm:grid-cols-2"><Info title="分層保暖" icon={CloudSnow}>發熱衣＋長袖＋中層刷毛或毛衣＋防風羽絨外套。</Info><Info title="雪地裝備" icon={Footprints}>防水防滑鞋、手套、毛帽、暖暖包與行動電源。</Info></div>}</div></div></section>}
-
-function Alternatives(){return <section className="bg-[#132238] py-20 text-white"><div className="mx-auto max-w-7xl px-5 lg:px-8"><span className="eyebrow">Plan B</span><h2 className="mt-3 font-display text-4xl font-semibold">可替換景點</h2><div className="mt-10 grid border-l border-t border-white/15 sm:grid-cols-3">{alternatives.map(([label,value,Icon])=><div key={label} className="border-b border-r border-white/15 p-7"><Icon className="text-[#e0bb60]"/><span className="mt-8 block text-xs text-white/45">如果你比較喜歡 · {label}</span><strong className="mt-2 block text-lg">{value}</strong></div>)}</div></div></section>}
-
-export default function App(){const [selected,setSelected]=useState(1);const [open,setOpen]=useState(false);return <><Header open={open} setOpen={setOpen}/><main><Hero/><Overview/><DayDetail selected={selected} setSelected={setSelected}/><Preparation/><Alternatives/></main><footer className="bg-[#0c1727] px-5 py-10 text-xs text-white/50"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 sm:flex-row"><span className="text-white/80">❄ 名古屋冬旅 · 2027</span><span>行程依 2026/09/07 查核資料整理；出發前請再次確認航班、休館日與交通公告。</span></div></footer></>}
