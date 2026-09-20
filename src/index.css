@@ -14,6 +14,24 @@ button:focus-visible, a:focus-visible { outline: 3px solid #538574; outline-offs
 .app-header h1 { margin: 0; font-size: 23px; font-weight: 700; letter-spacing: -.5px; }
 .app-header p { margin: 8px 0 26px; color: #7b837f; font-size: 13px; }
 .date-picker { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 14px; scrollbar-width: thin; scrollbar-color: #dce3df transparent; }
+.flight-card { margin-bottom: 20px; padding: 18px; border: 1px solid #e5ebe6; border-radius: 12px; }
+.flight-card h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; margin: 0; font-size: 14px; }
+.flight-card h2 span { color: #7b837f; font-size: 11px; font-weight: 400; }
+.flight-row { padding: 16px 0; }
+.flight-row + .flight-row { border-top: 1px dashed #dce3df; }
+.flight-date { margin: 0 0 10px; color: #507060; font-size: 11px; }
+.flight-route { display: grid; grid-template-columns: 65px minmax(0, 1fr) 65px; align-items: center; gap: 12px; }
+.flight-airport { display: flex; flex-direction: column; gap: 3px; }
+.flight-airport strong { font-size: 22px; font-variant-numeric: tabular-nums; }
+.flight-airport b { font-size: 16px; }
+.flight-airport span { font-size: 12px; color: #7b837f; }
+.flight-arrival { text-align: right; }
+.flight-path { text-align: center; }
+.flight-path strong { font-size: 12px; }
+.flight-path > span { font-size: 11px; color: #7b837f; }
+.flight-line { position: relative; margin: 12px 0; border-top: 2px dotted #dce3df; }
+.flight-line svg { position: absolute; right: 0; top: -9px; color: #7b837f; background: #fff; transform: rotate(45deg); }
+.flight-note { margin: 0; padding-top: 12px; border-top: 1px solid #edf0ed; color: #7b837f; font-size: 11px; }
 .date-button { flex: 1 0 61px; display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 12px 6px; border: 0; border-radius: 14px; background: #f3f5f3; color: #737d77; }
 .date-button span { font-size: 11px; }
 .date-button strong { font-size: 16px; font-weight: 600; }
@@ -50,3 +68,16 @@ button:focus-visible, a:focus-visible { outline: 3px solid #538574; outline-offs
 .transport-sources { margin-top: 20px; font-size: 12px; color: #7b837f; }
 .transport-sources summary { cursor: pointer; }
 .transport-sources a { display: inline-block; margin: 8px 14px 0 0; }
+.day-heading .day-subtitle { margin: 10px 0 0; line-height: 1.7; }
+.day-overview { margin-bottom: 24px; padding: 16px; background: #f3f6f3; border-radius: 12px; }
+.day-overview h3, .day-backup h3 { margin: 0 0 6px; font-size: 13px; color: #2d594b; }
+.day-overview p, .day-backup p { margin: 0; font-size: 13px; line-height: 1.9; color: #56665e; }
+.day-overview .day-route { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 12px; font-size: 12px; }
+.day-route svg { flex-shrink: 0; margin-top: 4px; }
+.visit-duration { display: inline-block; margin: 10px 0 6px; color: #507060; font-size: 11px; font-weight: 600; line-height: 1.7; }
+.event-content .visit-detail { color: #65716b; font-size: 13px; line-height: 1.9; }
+.day-backup { margin-top: 20px; padding: 16px; border: 1px solid #e5ebe6; border-radius: 12px; }
+.meeting-map { margin-top: 16px; min-width: 0; }
+.event-content .meeting-map p { font-size: 12px; color: #56665e; overflow-wrap: anywhere; }
+.meeting-map iframe { display: block; width: 100%; height: 240px; margin-top: 12px; border: 1px solid #e5ebe6; border-radius: 10px; }
+.meeting-map-links { display: flex; flex-wrap: wrap; gap: 0 16px; }

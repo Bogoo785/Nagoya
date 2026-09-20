@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import transport from './transport.json'
+import { dayDetails, detailSources } from './dayDetails'
 import { ArrowLeft, ArrowRight, Bus, CloudSnow, Landmark, Luggage, MapPin, Plane, TrainFront } from 'lucide-react'
+
+const meetingPointQuery = encodeURIComponent('ミニストップ 名駅椿町店 愛知県名古屋市中村区椿町5-10')
+const vipMeetingPointQuery = encodeURIComponent('VIPライナー 名古屋 乗降車地')
+const vipMapEmbed = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2282.1181593839992!2d136.87902346220113!3d35.16969314243519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6003771480aa1699%3A0x43f1a5defc495905!2zVklQ44Op44Kk44OK44O8IOWQjeWPpOWxiyDkuZfpmY3ou4rlnLA!5e0!3m2!1sja!2sjp!4v1699767443118!5m2!1sja!2sjp'
 
 const days = [
   { day:1, date:'1/6（三）', short:'抵達名古屋', title:'抵達名古屋', subtitle:'18:50 落地，第一晚只排入住＋晚餐', region:'高雄 → 中部國際機場 → 名古屋', icon:Plane, note:'不塞景點，冬天班機、行李、交通有延誤也不會影響後面。', events:[['14:50','搭乘 IT268，由高雄 KHH 飛往名古屋 NGO。','plane'],['18:50','抵達中部國際機場第二航廈（Terminal 2），入境、領行李。','plane'],['19:50 左右','步行到機場站，搭名鐵 μSKY 前往名鐵名古屋，最快約 28 分鐘。','train'],['20:30–21:00','抵達名古屋站、入住飯店；先熟悉 JR／名鐵／近鐵與地下街位置。','hotel'],['21:00 後','名古屋站附近吃晚餐／宵夜，第一晚不再安排景點。','food']], tip:'建議住名古屋站步行 5–10 分鐘內；若 KKday 在名古屋站西口集合，住太閤通口一帶尤其方便。' },
@@ -16,6 +21,7 @@ const days = [
 export default function App() {
   const [selected, setSelected] = useState(0)
   const day = days[selected]
+  const details = dayDetails[day.day]
 
   function selectDay(index) {
     setSelected(index)
@@ -27,6 +33,22 @@ export default function App() {
       <h1>名古屋行程</h1>
       <p>2027 年 1 月 6 日 — 13 日</p>
     </header>
+
+    <section className="flight-card" aria-labelledby="flight-title">
+      <h2 id="flight-title">來回航班 <span>台灣虎航 · tigersmart</span></h2>
+      {[
+        { date: '1/6 去程', number: 'IT 268', departure: '14:50', from: 'KHH', fromCity: '高雄', arrival: '18:50', to: 'NGO', toCity: '名古屋', duration: '3 小時 0 分' },
+        { date: '1/13 回程', number: 'IT 269', departure: '19:40', from: 'NGO', fromCity: '名古屋', arrival: '22:35', to: 'KHH', toCity: '高雄', duration: '3 小時 55 分' },
+      ].map(flight => <div className="flight-row" key={flight.number}>
+        <p className="flight-date">{flight.date}</p>
+        <div className="flight-route">
+          <div className="flight-airport"><strong>{flight.departure}</strong><b>{flight.from}</b><span>{flight.fromCity}</span></div>
+          <div className="flight-path"><strong>{flight.number}</strong><div className="flight-line"><Plane size={17} aria-hidden="true" /></div><span>{flight.duration}</span></div>
+          <div className="flight-airport flight-arrival"><strong>{flight.arrival}</strong><b>{flight.to}</b><span>{flight.toCity}</span></div>
+        </div>
+      </div>)}
+      <p className="flight-note">起降時間皆為當地時間</p>
+    </section>
 
     <details className="subway-map">
       <summary>名古屋地鐵圖 <span>點開查看</span></summary>
@@ -55,6 +77,12 @@ export default function App() {
       <div className="day-heading">
         <p>第 {day.day} 天 · {day.date}</p>
         <h2 id="day-title">{day.title}</h2>
+        <p className="day-subtitle">{day.subtitle}</p>
+      </div>
+      <div className="day-overview">
+        <p className="day-route"><MapPin size={15} aria-hidden="true" />{day.region}</p>
+        <h3>出門前準備</h3>
+        <p>{details.prepare}</p>
       </div>
       <p className="transport-note">交通以名古屋站附近住宿安排；以下是建議走法，行程時間不是列車發車時刻。</p>
       <ol className="itinerary">
@@ -62,13 +90,57 @@ export default function App() {
           <span className="event-time">{time}</span>
           <div className="event-content">
             <p>{label}</p>
+            <span className="visit-duration">{details.stops[index][0]}</span>
+            <p className="visit-detail">{details.stops[index][1]}</p>
             {transport[day.day]?.[index] && <p className="transit-directions"><TrainFront size={14} aria-hidden="true" /><span>{transport[day.day][index]}</span></p>}
 
             {mapUrl && <a href={mapUrl} target="_blank" rel="noreferrer"><MapPin size={14} />查看地圖</a>}
+            {day.day === 4 && index === 0 && <div className="meeting-map">
+              <p><strong>集合點：VIP LINER 名古屋巴士站</strong></p>
+              <p>名古屋站太閤通南口步行約 5 分鐘。過 Lawson 前方斑馬線，往 Times Car Otake Parking 方向，左側道路旁可看到 VIP LINER 站牌。</p>
+              <p>請到站牌旁向領隊報到；VIP Lounge 候車室在附近，集合位置請以 KKday 憑證確認。</p>
+              <iframe
+                title="VIP LINER 名古屋巴士站集合點地圖"
+                src={vipMapEmbed}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              <div className="meeting-map-links">
+                <a href="https://www.google.com/maps?cid=4895876647062427909" target="_blank" rel="noreferrer"><MapPin size={14} aria-hidden="true" />開啟集合點地圖</a>
+                <a href={`https://www.google.com/maps/dir/?api=1&destination=${vipMeetingPointQuery}&travelmode=walking`} target="_blank" rel="noreferrer">步行導航 <ArrowRight size={14} aria-hidden="true" /></a>
+                <a href="https://tour.vipliner.biz/map/nagoya-vipbusstop/" target="_blank" rel="noreferrer">官方集合點圖解</a>
+              </div>
+            </div>}
+            {day.day === 7 && index === 0 && <div className="meeting-map">
+              <p><strong>集合點：MINISTOP 名駅椿町店</strong></p>
+              <p>名古屋站太閤通口（西側） · 愛知県名古屋市中村区椿町5-10，CORE meieki 大樓 1 樓門前</p>
+              <iframe
+                title="MINISTOP 名駅椿町店集合點地圖"
+                src={`https://www.google.com/maps?q=${meetingPointQuery}&output=embed`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              <div className="meeting-map-links">
+                <a href={`https://www.google.com/maps/search/?api=1&query=${meetingPointQuery}`} target="_blank" rel="noreferrer"><MapPin size={14} aria-hidden="true" />開啟集合點地圖</a>
+                <a href={`https://www.google.com/maps/dir/?api=1&destination=${meetingPointQuery}&travelmode=walking`} target="_blank" rel="noreferrer">步行導航 <ArrowRight size={14} aria-hidden="true" /></a>
+                <a href="https://map.ministop.co.jp/detail/0000000362/" target="_blank" rel="noreferrer">官方門市資訊</a>
+              </div>
+            </div>}
           </div>
         </li>)}
       </ol>
+      <aside className="day-backup">
+        <h3>雨雪／時間不足時</h3>
+        <p>{details.fallback}</p>
+      </aside>
       {day.bookingUrl && <a className="booking-link" href={day.bookingUrl} target="_blank" rel="noreferrer">KKday 行程資訊 <ArrowRight size={14} /></a>}
+      <details className="transport-sources">
+        <summary>景點資訊與行程安排說明</summary>
+        <p>景點資訊查核：2026/09/20。停留時間、用餐與遊覽順序為建議安排；2027 年 1 月的開放時間、票價與體驗規則請於出發前再確認。跟團集合及停留時間以訂單憑證與領隊通知為準。</p>
+        {detailSources.map(([label, url]) => <a key={url} href={url} target="_blank" rel="noreferrer">{label}</a>)}
+      </details>
       <details className="transport-sources">
         <summary>交通資料來源</summary>
         <p>依官方路線整理，查核於 2026/09/19；2027 年 1 月實際班次請於出發前確認。跟團集合資訊沿用你的行程與憑證。</p>
